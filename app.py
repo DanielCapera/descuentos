@@ -1,34 +1,54 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, jsonify, request
+from auth import obtener_access_token
 import requests
-from bs4 import BeautifulSoup
-import random
+import urllib.parse  # Para codificar/decodificar datos en la URL
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-# Función para hacer scraping de productos en Mercado Libre
+ACCESS_TOKEN = obtener_access_token()
+if not ACCESS_TOKEN:
+    print("❌ No se pudo obtener el Access Token. Verifica las credenciales.")
+    exit()  # Sale del programa si no se puede obtener el token
+
+SITE_ID = "MCO"  # Código del sitio (Colombia)
+QUERY = "computadores lenovo"  # Palabra clave de búsqueda
+
 def obtener_productos():
-    url = "https://listado.mercadolibre.com.co/computadores-lenovo"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
-    
-    productos = []
-    for item in soup.select(".ui-search-result__content-wrapper")[:10]:
-        titulo = item.select_one(".ui-search-item__title").text
-        precio = item.select_one(".price-tag-fraction").text
-        link = item.select_one("a.ui-search-link")["href"]
-        
-        productos.append({
-            "titulo": titulo,
-            "precio": precio,
-            "link": link
-        })
-    
-    return productos
+    url = f"https://api.mercadolibre.com/sites/{SITE_ID}/search?q={QUERY}&limit=9"
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
-# Función para predecir descuento con IA (simulación con random)
-def predecir_descuento():
-    return round(random.uniform(5, 30), 2)  # Descuento aleatorio entre 5% y 30%
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        productos = []
+        
+        for item in data["results"]:
+            # Obtener una imagen más grande si está disponible
+            image_url = item["thumbnail"].replace("I.jpg", "O.jpg")  # Imagen en mejor calidad
+
+            productos.append({
+                "titulo": item["title"],
+                "precio": item["price"],
+                "link": item["permalink"],
+                "imagen": image_url
+            })
+        
+        return productos
+    else:
+        print(f"Error: {response.status_code}, {response.text}")
+        return []
+
+def format_price(value):
+    """Formatea el precio con separadores de miles y símbolo de pesos."""
+    try:
+        return "${:,.0f}".format(float(value)).replace(",", ".")
+    except ValueError:
+        return value  # Si el valor no es convertible, se devuelve tal cual
+
+# Registrar el filtro en Jinja2
+app.jinja_env.filters["format_price"] = format_price
 
 @app.route('/')
 def home():
@@ -36,17 +56,21 @@ def home():
     return render_template('index.html', productos=productos)
 
 @app.route('/producto')
-def producto():
-    titulo = request.args.get('titulo')
-    precio = request.args.get('precio')
-    descuento_futuro = predecir_descuento()
-    precio_futuro = round(float(precio.replace(',', '')) * (1 - descuento_futuro / 100), 2)
-    
-    return render_template('producto.html', titulo=titulo, precio=precio, descuento_futuro=descuento_futuro, precio_futuro=precio_futuro)
+def detalle_producto():
+    """Recibe los datos desde la URL y los pasa a detalle.html"""
+    titulo = request.args.get("titulo")
+    precio = request.args.get("precio")
+    imagen = request.args.get("imagen")
 
-@app.route('/sobre-nosotros')
-def sobre_nosotros():
-    return render_template('sobre_nosotros.html')
+    if not titulo or not precio or not imagen:
+        return "Producto no encontrado", 404
+
+    return render_template('detalle.html', titulo=titulo, precio=precio, imagen=imagen)
+
+@app.route('/api/productos')
+def api_productos():
+    productos = obtener_productos()
+    return jsonify(productos)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header>Detalle del Producto</header>
+
+    <div class="container">
+        <div class="product-detail">
+            <img src="{{ imagen }}" alt="{{ titulo }}">
+            <div class="info">
+                <h2>{{ titulo }}</h2>
+                <h3>Historial de Precios</h3>
+                <p>Precio actual: {{ precio | format_price }}</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

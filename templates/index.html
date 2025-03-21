@@ -1,108 +1,53 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio - Descuentos Reales</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>Descubre Descuentos Reales</header>
+
+    <header>
+        <h1>Descubre Descuentos Reales, No Trucos de Marketing</h1>
+        <p>¿Los descuentos en línea son realmente ofertas o solo estrategias de marketing? La herramienta Detector de Descuentos usa inteligencia artificial para analizar el historial de precios y ayudarte a identificar si una oferta es genuina. No vuelvas a caer en falsos descuentos y ahorra de verdad con información transparente y confiable.</p>
+    </header>
+
     <div class="container">
-        <h2>Productos en Oferta</h2>
-        <div class="product-list" id="productos">
-            <!-- Aquí se insertarán los productos scrapeados -->
+        <h2>Productos Analizados</h2>
+        <div class="product-list">
+            {% for producto in productos %}
+            <div class="product">
+                <img src="{{ producto.imagen }}" alt="{{ producto.titulo }}">
+                <h3>{{ producto.titulo }}</h3>
+                <p>Precio: {{ producto.precio | format_price }}</p>
+                <a href="{{ url_for('detalle_producto') }}?titulo={{ producto.titulo | urlencode }}&precio={{ producto.precio | format_price | urlencode }}&imagen={{ producto.imagen | urlencode }}" class="btn">
+                    Ver Detalle
+                </a>                
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2>Nuestros usuarios avalan nuestra aplicación</h2>
+        <div class="testimonials">
+            <div class="testimonial">
+                <p>"¡Me ayudó a ahorrar dinero! Muy recomendable."</p>
+                <span>- Usuario 1</span>
+            </div>
+            <div class="testimonial">
+                <p>"Antes caía en falsas ofertas, ahora tengo información real."</p>
+                <span>- Usuario 2</span>
+            </div>
+            <div class="testimonial">
+                <p>"Es la mejor herramienta para encontrar descuentos genuinos."</p>
+                <span>- Usuario 3</span>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <footer>
+        <p>&copy; 2025 Descuentos Reales</p>
+    </footer>
+
 </body>
 </html>
-
-<!-- detalle.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle del Producto</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>Detalle del Producto</header>
-    <div class="container" id="detalle-producto">
-        <!-- Aquí se cargará el detalle del producto con el descuento futuro -->
-    </div>
-    <script src="detalle.js"></script>
-</body>
-</html>
-
-<!-- sobre_nosotros.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nosotros</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>Sobre Nosotros</header>
-    <div class="about-container">
-        <h2>Quiénes Somos</h2>
-        <p>Somos una empresa comprometida con brindarte los mejores descuentos en tecnología.</p>
-    </div>
-</body>
-</html>
-
-/* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-}
-header {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    font-size: 1.5rem;
-}
-.container {
-    width: 80%;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-.product-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-.product {
-    width: 30%;
-    border: 1px solid #ddd;
-    padding: 15px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-.product img {
-    width: 100%;
-    height: auto;
-}
-.product a {
-    display: block;
-    text-decoration: none;
-    color: #007BFF;
-    font-weight: bold;
-    margin-top: 10px;
-}
-/* sobre_nosotros.html estilos */
-.about-container {
-    text-align: center;
-    padding: 20px;
-}
