@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 
-MONGO_URI = "mongodb://localhost:27017/"
-DB_NAME = "discount_detector"
+MONGO_URI = "mongodb+srv://descuentos:Descuentos@cluster0.zdyuqay.mongodb.net/descuentos?retryWrites=true&w=majority"
 
 client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
+db = client.get_database()  # O db = client["descuentos"]

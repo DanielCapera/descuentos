@@ -1,210 +1,51 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-}
-
-header {
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 1.5rem;
-}
-
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 20px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  image-rendering: crisp-edges;
-}
-
-.banner-img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-/* 📌 Diseño RESPONSIVE usando Grid con filas de 3 en 3 */
-.product-list {
+.productos-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas fijas */
   gap: 20px;
   justify-content: center;
-  padding: 20px 0;
+  padding: 20px;
 }
 
 .product {
+  background: #fff;
   border: 1px solid #ddd;
   padding: 15px;
-  background: white;
-  border-radius: 5px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: transform 0.2s ease-in-out;
-}
-
-.product:hover {
-  transform: scale(1.05);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .product img {
   width: 100%;
   height: auto;
+  max-width: 250px;
 }
 
 .btn {
   display: inline-block;
   margin-top: 10px;
-  padding: 8px 15px;
-  background: #007BFF;
+  padding: 10px 15px;
+  background: #007bff;
   color: white;
   text-decoration: none;
   border-radius: 5px;
-  font-weight: bold;
 }
 
 .btn:hover {
   background: #0056b3;
 }
 
-/* Testimonios con diseño responsivo */
-.testimonials {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.testimonial {
-  width: 100%;
-  max-width: 300px;
-  background: #f8f8f8;
-  padding: 15px;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: #222;
-  color: white;
-  margin-top: 20px;
-}
-
-footer img {
-  width: 80px;
-}
-
-/* 📌 RESPONSIVE para móviles */
-@media (max-width: 1024px) {
-  .product-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .product-list {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-/* Estilos para detalle.html */
-
-.product-detail-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 90%;
-  max-width: 1200px;
+.btn-mas {
+  display: block;
   margin: 20px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.product-info {
-  flex: 1;
-  min-width: 300px;
-  text-align: left;
-}
-
-.product-info h1 {
-  font-size: 24px;
-  color: #333;
-}
-
-.product-info img {
-  max-width: 100%;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.price-history {
-  flex: 1;
-  min-width: 300px;
-  background: #f8f8f8;
-  padding: 15px;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.price-history h2 {
-  font-size: 20px;
-  color: #007BFF;
-  margin-bottom: 10px;
-}
-
-.price-history ul {
-  list-style: none;
-  padding: 0;
-}
-
-.price-history li {
-  font-size: 16px;
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-}
-
-.btn-back {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 15px;
-  background: #007BFF;
+  padding: 10px 20px;
+  background: #28a745;
   color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.btn-back:hover {
-  background: #0056b3;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .product-detail-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  .product-info, .price-history {
-    width: 100%;
-    text-align: center;
-  }
+.btn-mas:hover {
+  background: #218838;
 }

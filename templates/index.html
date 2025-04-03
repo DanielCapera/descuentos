@@ -10,23 +10,26 @@
 
     <header>
         <h1>Descubre Descuentos Reales, No Trucos de Marketing</h1>
-        <p>¿Los descuentos en línea son realmente ofertas o solo estrategias de marketing? La herramienta Detector de Descuentos usa inteligencia artificial para analizar el historial de precios y ayudarte a identificar si una oferta es genuina. No vuelvas a caer en falsos descuentos y ahorra de verdad con información transparente y confiable.</p>
+        <p>¿Los descuentos en línea son realmente ofertas o solo estrategias de marketing? La herramienta Detector de
+            Descuentos usa inteligencia artificial para analizar el historial de precios y ayudarte a identificar si una
+            oferta es genuina. No vuelvas a caer en falsos descuentos y ahorra de verdad con información transparente y
+            confiable.</p>
     </header>
 
     <div class="container">
         <h2>Productos Analizados</h2>
-        <div class="product-list">
+        <div id="productos-container" class="productos-grid">
             {% for producto in productos %}
             <div class="product">
-                <img src="{{ producto.imagen }}" alt="{{ producto.titulo }}">
-                <h3>{{ producto.titulo }}</h3>
-                <p>Precio: {{ producto.precio | format_price }}</p>
-                <a href="{{ url_for('detalle_producto') }}?titulo={{ producto.titulo | urlencode }}&precio={{ producto.precio | format_price | urlencode }}&imagen={{ producto.imagen | urlencode }}" class="btn">
-                    Ver Detalle
-                </a>                
+                <img src="{{ producto.imagen }}" alt="{{ producto.modelo }}">
+                <h3>{{ producto.modelo }}</h3>
+                <p>Precio: {{ producto.precio_actual | format_price }}</p>
+                <a href="#" class="btn">Ver Detalle</a>
             </div>
             {% endfor %}
         </div>
+
+        <button id="ver-mas" class="btn-mas">Ver Más</button>
 
         <h2>Nuestros usuarios avalan nuestra aplicación</h2>
         <div class="testimonials">
@@ -48,6 +51,47 @@
     <footer>
         <p>&copy; 2025 Descuentos Reales</p>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let skip = 9;
+            let button = document.getElementById("ver-mas");
+
+            button.addEventListener("click", function () {
+                fetch("/api/load_more", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ skip: skip }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.productos.length > 0) {
+                        let container = document.getElementById("productos-container");
+                        data.productos.forEach(producto => {
+                            let div = document.createElement("div");
+                            div.classList.add("product");
+                            div.innerHTML = `
+                                <img src="${producto.imagen}" alt="${producto.modelo}">
+                                <h3>${producto.modelo}</h3>
+                                <p>Precio: ${producto.precio_actual}</p>
+                                <a href="#" class="btn">Ver Detalle</a>
+                            `;
+                            container.appendChild(div);
+                        });
+
+                        // Aplicar nuevamente la clase para mantener la grilla
+                        container.classList.add("productos-grid");
+
+                        skip += data.productos.length;
+                    }
+
+                    if (!data.has_more) {
+                        button.style.display = "none";
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>

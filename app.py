@@ -1,76 +1,41 @@
 from flask import Flask, render_template, jsonify, request
-from auth import obtener_access_token
-import requests
-import urllib.parse  # Para codificar/decodificar datos en la URL
+from pymongo import MongoClient
+import math
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-ACCESS_TOKEN = obtener_access_token()
-if not ACCESS_TOKEN:
-    print("❌ No se pudo obtener el Access Token. Verifica las credenciales.")
-    exit()  # Sale del programa si no se puede obtener el token
-
-SITE_ID = "MCO"  # Código del sitio (Colombia)
-QUERY = "computadores lenovo"  # Palabra clave de búsqueda
-
-def obtener_productos():
-    url = f"https://api.mercadolibre.com/sites/{SITE_ID}/search?q={QUERY}&limit=9"
-    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
-
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        productos = []
-        
-        for item in data["results"]:
-            # Obtener una imagen más grande si está disponible
-            image_url = item["thumbnail"].replace("I.jpg", "O.jpg")  # Imagen en mejor calidad
-
-            productos.append({
-                "titulo": item["title"],
-                "precio": item["price"],
-                "link": item["permalink"],
-                "imagen": image_url
-            })
-        
-        return productos
-    else:
-        print(f"Error: {response.status_code}, {response.text}")
-        return []
+# Conexión a MongoDB
+MONGO_URI = "mongodb+srv://descuentos:Descuentos@cluster0.zdyuqgy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+client = MongoClient(MONGO_URI)
+db = client["descuentos"]
+collection = db["computadores"]
 
 def format_price(value):
     """Formatea el precio con separadores de miles y símbolo de pesos."""
     try:
         return "${:,.0f}".format(float(value)).replace(",", ".")
     except ValueError:
-        return value  # Si el valor no es convertible, se devuelve tal cual
+        return value
 
-# Registrar el filtro en Jinja2
 app.jinja_env.filters["format_price"] = format_price
 
-@app.route('/')
+@app.route("/")
 def home():
-    productos = obtener_productos()
-    return render_template('index.html', productos=productos)
+    productos = list(collection.find({}, {"_id": 0, "modelo": 1, "descripcion": 1, "precio_actual": 1, "imagen": 1}).limit(9))
+    return render_template("index.html", productos=productos)
 
-@app.route('/producto')
-def detalle_producto():
-    """Recibe los datos desde la URL y los pasa a detalle.html"""
-    titulo = request.args.get("titulo")
-    precio = request.args.get("precio")
-    imagen = request.args.get("imagen")
+@app.route("/api/load_more", methods=["POST"])
+def load_more():
+    skip = int(request.json.get("skip", 0))
+    per_page = 9
 
-    if not titulo or not precio or not imagen:
-        return "Producto no encontrado", 404
+    productos_cursor = collection.find({}, {"_id": 0, "modelo": 1, "descripcion": 1, "precio_actual": 1, "imagen": 1}).skip(skip).limit(per_page)
+    productos = list(productos_cursor)
 
-    return render_template('detalle.html', titulo=titulo, precio=precio, imagen=imagen)
+    return jsonify({
+        "productos": productos,
+        "has_more": collection.count_documents({}) > skip + per_page
+    })
 
-@app.route('/api/productos')
-def api_productos():
-    productos = obtener_productos()
-    return jsonify(productos)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
