@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: descuentos
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "./start.sh"
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://descuentos:Descuentos@cluster0.zdyuqgy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
