@@ -1,25 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle del Producto</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="/static/img/logo-removebg-preview.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
 
-    <header>Detalle del Producto</header>
+<body>
+    <nav>
+        <img src="/static/img/logo.jpeg" alt="logo">
+    </nav>
+
+    <a href="{{ url_for('home') }}" class="volver-header">
+        <img src="/static/img/volver-flecha.png" alt="volver">
+        <span>Volver</span>
+    </a>
 
     <div class="container">
         <div class="product-detail">
             <img src="{{ imagen }}" alt="{{ titulo }}">
             <div class="info">
                 <h2>{{ titulo }}</h2>
-                <h3>Historial de Precios</h3>
-                <p>Precio actual: {{ precio | format_price }}</p>
+                <h3>Lista de Precios</h3>
+                <p>Precio {{ precio | format_price }} en
+                    <a href="{{ url }}" target="_blank">
+                        <img src="data:image/webp;base64,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"
+                            alt="Mercado Libre">
+                    </a>
+                </p>
+                <p>Precio {{ web_uno.precio_actual | format_price }} en
+                    <a href="{{ web_uno.url }}" target="_blank">
+                        <img src="{{ web_uno.logo }}" alt="Mercado Libre">
+                    </a>
+                </p>
+                <p>Precio {{ web_dos.precio_actual | format_price }} en
+                    <a href="{{ web_dos.url }}" target="_blank">
+                        <img src="{{ web_dos.logo }}" alt="Mercado Libre">
+                    </a>
+                </p>
             </div>
+        </div>
+        <div class="grafico-precios">
+            <h3>Histórico de Precios (últimos 5 meses)</h3>
+            <canvas id="graficoPrecios"></canvas>
+            <script id="historico-data" type="application/json">
+                {{ historico_precios | tojson | safe }}
+            </script>
+            {% if es_descuento_real %}
+            <p style="color: green;">✅ De acuerdo a nuestro análisis con inteligencia artificial, ¡el precio más bajo de este
+                producto tiene un descuento real! ¡Aprovecha esta oportunidad!</p>
+            </p>
+            {% else %}
+            <p style="color: red;">
+                ❌ De acuerdo a nuestro análisis con inteligencia artificial, este precio no representa un descuento real.
+                Recomendamos comparar antes de comprar.
+            </p>
+            {% endif %}
         </div>
     </div>
 
+    <footer>
+        <p>&copy; 2025 Descuentos Reales</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/grafico.js') }}"></script>
 </body>
+
 </html>

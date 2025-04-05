@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
-import math
+from predictor import predecir_descuento
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
@@ -26,19 +26,44 @@ def home():
 
 @app.route("/detalle/<modelo>")
 def detalle_producto(modelo):
-    producto = collection.find_one({"modelo": modelo}, {"_id": 0, "modelo": 1, "precio_actual": 1, "imagen": 1})
+    producto = collection.find_one(
+        {"modelo": modelo},
+        {
+            "_id": 0,
+            "descripcion": 1,
+            "precio_actual": 1,
+            "imagen": 1,
+            "modelo": 1,
+            "url": 1,
+            "datos_web_uno": 1,
+            "datos_web_dos": 1,
+            "historico_precios": 1
+        }
+    )
 
     if not producto:
         return "Producto no encontrado", 404
+    
+    es_descuento_real = predecir_descuento(producto)
 
-    return render_template("detalle.html", titulo=producto["modelo"], precio=producto["precio_actual"], imagen=producto["imagen"])
+    return render_template(
+        "detalle.html",
+        titulo=producto["descripcion"],
+        precio=producto["precio_actual"],
+        imagen=producto["imagen"],
+        url=producto["url"],
+        web_uno=producto.get("datos_web_uno"),
+        web_dos=producto.get("datos_web_dos"),
+        historico_precios=producto.get("historico_precios"),
+        es_descuento_real=es_descuento_real
+    )
 
 @app.route("/api/load_more", methods=["POST"])
 def load_more():
     skip = int(request.json.get("skip", 0))
     per_page = 9
 
-    productos_cursor = collection.find({}, {"_id": 0, "modelo": 1, "descripcion": 1, "precio_actual": 1, "imagen": 1}).skip(skip).limit(per_page)
+    productos_cursor = collection.find({}, {"_id": 0, "descripcion": 1, "precio_actual": 1, "imagen": 1}).skip(skip).limit(per_page)
     productos = list(productos_cursor)
 
     return jsonify({
