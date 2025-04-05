@@ -24,6 +24,15 @@ def home():
     productos = list(collection.find({}, {"_id": 0, "modelo": 1, "descripcion": 1, "precio_actual": 1, "imagen": 1}).limit(9))
     return render_template("index.html", productos=productos)
 
+@app.route("/detalle/<modelo>")
+def detalle_producto(modelo):
+    producto = collection.find_one({"modelo": modelo}, {"_id": 0, "modelo": 1, "precio_actual": 1, "imagen": 1})
+
+    if not producto:
+        return "Producto no encontrado", 404
+
+    return render_template("detalle.html", titulo=producto["modelo"], precio=producto["precio_actual"], imagen=producto["imagen"])
+
 @app.route("/api/load_more", methods=["POST"])
 def load_more():
     skip = int(request.json.get("skip", 0))
