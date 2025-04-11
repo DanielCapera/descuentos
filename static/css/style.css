@@ -55,14 +55,12 @@ a {
 nav,
 img {
   mix-blend-mode: multiply;
-  margin-left: 32px;
   width: 208px;
 }
 
 header,
 .container
  {
-  margin: 0 100px;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -72,7 +70,6 @@ header,
 .productos-grid {
   display: grid;
   grid-template-columns: 1fr;
-  /* Móvil: 1 columna */
   gap: 20px;
   justify-content: center;
   padding: 20px;
@@ -81,7 +78,15 @@ header,
 @media (min-width: 768px) {
   .productos-grid {
     grid-template-columns: repeat(2, 1fr);
-    /* Tablets: 2 columnas */
+  }
+  header {
+    margin: 0 100px;
+  }
+}
+@media (max-width: 768px) {
+  header {
+    margin: 0;
+    padding: 20px;
   }
 }
 
@@ -158,7 +163,6 @@ header,
 
 footer {
   backdrop-filter: blur(10px);
-  background: linear-gradient(180deg, rgba(40, 0, 60, 0.7) 0%, rgba(0, 30, 60, 0.4) 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
   color: black;
@@ -174,11 +178,11 @@ footer {
   flex-direction: row; /* Por defecto en mobile */
   gap: 20px;
   align-items: center;
-  margin-top: 20px;
   background: linear-gradient(to right, #dbeafe, #c7d2fe);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  margin: 60px;
 }
 
 @media (max-width: 1024px) {
@@ -213,7 +217,7 @@ footer {
   text-decoration: none;
   color: inherit;
   margin-left: 100px;
-  
+  margin: 0 60px;
 }
 
 .volver-header img {
@@ -238,7 +242,6 @@ footer {
 .grafico-precios {
   width: 100%;
   max-width: 700px; /* o 800px, ve probando */
-  margin: 20px auto; /* sigue centrado horizontalmente */
   padding: 20px;
   border-radius: 15px;
   background: linear-gradient(to right, #dbeafe, #c7d2fe);
@@ -254,4 +257,65 @@ footer {
 .grafico-precios h3 {
   margin-bottom: 20px;
   color: #333;
+}
+
+.descuento-inteligente {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 700px;
+  background: linear-gradient(to right, #dbeafe, #c7d2fe);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.descuento-inteligente p {
+  font-size: 1.6rem;
+  line-height: 1.8;
+  font-weight: 600;
+}
+
+.descuento-real {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border: 2px solid #badbcc;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.descuento-falso {
+  color: #842029;
+  background-color: #f8d7da;
+  border: 2px solid #f5c2c7;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contenedor-flex {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 60px;
+  gap: 20px; /* espacio entre elementos */
+  justify-content: center; /* centra en horizontal si sobra espacio */
+}
+
+.grafico-precios,
+.descuento-inteligente {
+  flex: 1 1 300px; /* pueden crecer y encogerse, mínimo 300px */
+  max-width: 700px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .grafico-precios,
+  .descuento-inteligente {
+    flex: 1 1 100%;
+  }
 }

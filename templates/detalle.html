@@ -44,22 +44,27 @@
                 </p>
             </div>
         </div>
-        <div class="grafico-precios">
-            <h3>Histórico de Precios (últimos 5 meses)</h3>
-            <canvas id="graficoPrecios"></canvas>
-            <script id="historico-data" type="application/json">
+        <div class="contenedor-flex">
+            <div class="grafico-precios">
+                <h3>Histórico de Precios (últimos 5 meses)</h3>
+                <canvas id="graficoPrecios"></canvas>
+                <script id="historico-data" type="application/json">
                 {{ historico_precios | tojson | safe }}
-            </script>
-            {% if es_descuento_real %}
-            <p style="color: green;">✅ De acuerdo a nuestro análisis con inteligencia artificial, ¡el precio más bajo de este
-                producto tiene un descuento real! ¡Aprovecha esta oportunidad!</p>
-            </p>
-            {% else %}
-            <p style="color: red;">
-                ❌ De acuerdo a nuestro análisis con inteligencia artificial, este precio no representa un descuento real.
-                Recomendamos comparar antes de comprar.
-            </p>
-            {% endif %}
+              </script>
+            </div>
+            <div class="descuento-inteligente">
+                {% if es_descuento_real %}
+                <p class="descuento-real">
+                    De acuerdo a nuestro análisis con inteligencia artificial, ¡el precio más bajo de este producto
+                    tiene un <strong>descuento real</strong>! ¡Aprovecha esta oportunidad!
+                </p>
+                {% else %}
+                <p class="descuento-falso">
+                    De acuerdo a nuestro análisis con inteligencia artificial, este precio <strong>no representa un
+                        descuento real</strong>. Recomendamos comparar antes de comprar.
+                </p>
+                {% endif %}
+            </div>
         </div>
     </div>
 
