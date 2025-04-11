@@ -24,10 +24,10 @@ def home():
     productos = list(collection.find({}, {"_id": 0, "modelo": 1, "descripcion": 1, "precio_actual": 1, "imagen": 1}).limit(9))
     return render_template("index.html", productos=productos)
 
-@app.route("/detalle/<modelo>")
-def detalle_producto(modelo):
+@app.route("/detalle/<descripcion>")
+def detalle_producto(descripcion):
     producto = collection.find_one(
-        {"modelo": modelo},
+        {"descripcion": descripcion},
         {
             "_id": 0,
             "descripcion": 1,
@@ -57,19 +57,22 @@ def detalle_producto(modelo):
         historico_precios=producto.get("historico_precios"),
         es_descuento_real=es_descuento_real
     )
-
-@app.route("/api/load_more", methods=["POST"])
+    
+@app.route("/load_more", methods=["POST"])
 def load_more():
     skip = int(request.json.get("skip", 0))
     per_page = 9
 
-    productos_cursor = collection.find({}, {"_id": 0, "descripcion": 1, "precio_actual": 1, "imagen": 1}).skip(skip).limit(per_page)
+    productos_cursor = collection.find(
+        {},
+        {"_id": 0, "modelo": 1, "descripcion": 1, "precio_actual": 1, "imagen": 1}
+    ).skip(skip).limit(per_page)
+
     productos = list(productos_cursor)
 
     return jsonify({
         "productos": productos,
         "has_more": collection.count_documents({}) > skip + per_page
     })
-
 if __name__ == "__main__":
     app.run(debug=True)

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     button.addEventListener("click", function () {
-        fetch("/api/load_more", {
+        fetch("/load_more", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ skip: skip }),

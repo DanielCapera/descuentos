@@ -27,7 +27,7 @@
               <img src="{{ producto.imagen }}" alt="{{ producto.descripcion }}">
               <h3>{{ producto.descripcion }}</h3>
               <p>Precio: {{ producto.precio_actual | format_price }}</p>
-              <a href="{{ url_for('detalle_producto', modelo=producto.modelo) }}" class="btn">Ver Detalle</a>
+              <a href="{{ url_for('detalle_producto', descripcion=producto.descripcion) }}" class="btn">Ver Detalle</a>
           </div>
           {% endfor %}
       </div>
