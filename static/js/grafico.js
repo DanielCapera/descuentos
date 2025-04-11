@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
   const historicoElement = document.getElementById('historico-data');
-  console.log('historicoElement', historicoElement)
 
   if (!historicoElement) {
     console.error("No se encontró el elemento con id 'historico-data'");
